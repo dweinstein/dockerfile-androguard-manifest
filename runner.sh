@@ -16,7 +16,8 @@ INPUT_PATH="${TMP_DIR}/android_app.apk"
   ( [[ -e  "${APK_URL}" ]] && cat "${APK_URL}" > "${INPUT_PATH}" ) || \
   curl -m ${GET_TIMEOUT} -s "${APK_URL}" -o "${INPUT_PATH}" )
 
-${TOOL} ${INPUT_PATH} | \
-  ( [[ -z "${CALLBACK_URL}" ]] && cat || \
-  curl -m ${POST_TIMEOUT} -s -XPOST "${CALLBACK_URL}" -H "Content-Type: ${CONTENT_TYPE}" --data-binary @- )
+( [[ -n "${CALLBACK_URL}" ]] && \
+  ${TOOL} ${INPUT_PATH} \
+  | curl -m ${POST_TIMEOUT} -s -XPOST "${CALLBACK_URL}" -H "Content-Type: ${CONTENT_TYPE}" --data-binary @- ) || \
+  ${TOOL} ${INPUT_PATH}
 
