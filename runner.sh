@@ -8,6 +8,7 @@ POST_TIMEOUT=5
 CONTENT_TYPE="text/xml"
 TOOL="python ./androguard_manifest.py"
 
+# use a ramfs if possible for storing the app
 TMP_DIR=$([[ -d "/dev/shm" ]] && echo "/dev/shm/" || echo "/tmp/")
 INPUT_PATH="${TMP_DIR}/android_app.apk"
 
