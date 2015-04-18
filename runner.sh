@@ -1,12 +1,21 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 set -e
 
 APK_URL="$1"
 CALLBACK_URL="$2"
+GET_TIMEOUT=20
+POST_TIMEOUT=5
+CONTENT_TYPE="text/xml"
+TOOL="python ./androguard_manifest.py"
 
-([[ -z "${APK_URL}" ]] && (cat > /tmp/android_app.apk) || curl -m 20 -s "${APK_URL}" -o /tmp/android_app.apk)
+TMP_DIR=$([[ -d "/dev/shm" ]] && echo "/dev/shm/" || echo "/tmp/")
+INPUT_PATH="${TMP_DIR}/android_app.apk"
 
-python ./androguard_manifest.py /tmp/android_app.apk | \
+( ( [[ -z "${APK_URL}" ]] && cat > "${INPUT_PATH}" ) || \
+  ( [[ -e  "${APK_URL}" ]] && cat "${APK_URL}" > "${INPUT_PATH}" ) || \
+  curl -m ${GET_TIMEOUT} -s "${APK_URL}" -o "${INPUT_PATH}" )
+
+${TOOL} ${INPUT_PATH} | \
   ( [[ -z "${CALLBACK_URL}" ]] && cat || \
-  curl -m 5 -s -XPOST "${CALLBACK_URL}" -H "Content-Type: text/xml" --data-binary @- )
+  curl -m ${POST_TIMEOUT} -s -XPOST "${CALLBACK_URL}" -H "Content-Type: ${CONTENT_TYPE}" --data-binary @- )
 
