@@ -13,8 +13,8 @@ TOOL="python ./androguard_manifest.py"
 
 INPUT_PATH="${TMP_DIR}/android_app.apk"
 
-( [[ -z "${APK_URL}" ]] && cat > "${INPUT_PATH}"  || \
-  [[ -e "${APK_URL}" ]] && cat "${APK_URL}" > "${INPUT_PATH}" || \
+( ([[ -z "${APK_URL}" ]] && cat > "${INPUT_PATH}")  || \
+  ([[ -f "${APK_URL}" ]] && cat "${APK_URL}" > "${INPUT_PATH}") || \
   curl -m ${GET_TIMEOUT} -so "${INPUT_PATH}" "${APK_URL}" )
 
 ( [[ -n "${CALLBACK_URL}" ]] && \
