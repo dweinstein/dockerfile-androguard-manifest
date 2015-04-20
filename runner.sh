@@ -1,24 +1,39 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 set -e
 
 APK_URL="$1"
 CALLBACK_URL="$2"
-GET_TIMEOUT=20
-POST_TIMEOUT=5
-CONTENT_TYPE="text/xml"
-TOOL="python ./androguard_manifest.py"
+
+[ -z "${GET_TIMEOUT}" ] && GET_TIMEOUT=20
+[ -z "${POST_TIMEOUT}" ] && POST_TIMEOUT=5
+[ -z "${CONTENT_TYPE}" ] && CONTENT_TYPE="text/xml"
+[ -z "${PYTHON}" ] && PYTHON=python2
+[ -z "${TOOL}" ] && TOOL="${PYTHON} ./androguard_manifest.py"
+[ -z "${CURL}" ] && CURL=curl
 
 # use a ramfs if possible for storing the app
-[[ -d "/dev/shm" ]] && TMP_DIR="/dev/shm" || TMP_DIR="/tmp"
+[ -z "${TMPDIR}" ] && TMPDIR=/dev/shm
 
-INPUT_PATH="${TMP_DIR}/android_app.apk"
+INPUT_PATH="${TMPDIR}/android_app.apk"
+case "${APK_URL}" in
+-|'')
+  cat > "${INPUT_PATH}" || exit 1
+  ;;
+http*)
+  ${CURL} -m ${GET_TIMEOUT} -so "${INPUT_PATH}" "${APK_URL}" || exit 1
+  ;;
+*)
+  [ -f "${APK_URL}" ] && cp "${APK_URL}" "${INPUT_PATH}" || exit 1
+  ;;
+esac
 
-( ([[ -z "${APK_URL}" ]] && cat > "${INPUT_PATH}")  || \
-  ([[ -f "${APK_URL}" ]] && cat "${APK_URL}" > "${INPUT_PATH}") || \
-  curl -m ${GET_TIMEOUT} -so "${INPUT_PATH}" "${APK_URL}" )
-
-( [[ -n "${CALLBACK_URL}" ]] && \
-  ${TOOL} ${INPUT_PATH} \
-  | curl -m ${POST_TIMEOUT} -s -XPOST "${CALLBACK_URL}" -H "Content-Type: ${CONTENT_TYPE}" --data-binary @- ) || \
-  ${TOOL} ${INPUT_PATH}
+if [ -n "${CALLBACK_URL}" ]; then
+  exec ${TOOL} "${INPUT_PATH}" | \
+      ${CURL} -m ${POST_TIMEOUT} -s \
+      -XPOST "${CALLBACK_URL}" \
+      -H "Content-Type: ${CONTENT_TYPE}" \
+      --data-binary @-
+else
+  exec ${TOOL} "${INPUT_PATH}"
+fi
 
