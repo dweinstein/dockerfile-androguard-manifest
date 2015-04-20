@@ -6,4 +6,4 @@ if __name__ == "__main__":
     parser.add_argument('path', help='apk file path')
     args = parser.parse_args()
     a = APK(args.path)
-    print a.get_android_manifest_xml().toprettyxml(newl='')
+    print a.get_android_manifest_xml().toprettyxml(newl='', encoding='utf-8')
