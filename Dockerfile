@@ -10,5 +10,5 @@ ENV TOOL ${PYTHON} ./androguard_manifest.py
 ENV CONTENT_TYPE text/xml
 
 WORKDIR /opt/app/
-ENTRYPOINT /opt/app/runner.sh "${TOOL}"
+ENTRYPOINT ["/opt/app/runner.sh", "${TOOL}"]
 
