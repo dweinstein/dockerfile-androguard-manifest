@@ -5,10 +5,10 @@ ADD https://github.com/dweinstein/analysis-runner/archive/master.zip /tmp/runner
 RUN unzip -j /tmp/runner.zip -d /opt/runner && \
     rm -f /tmp/runner.zip
 
-ADD ./androguard_manifest.py /opt/app/androguard_manifest.py
+WORKDIR /opt/androguard-manifest/
+ADD ./androguard_manifest.py /opt/androguard-manifest/androguard_manifest.py
 ENV TOOL ${PYTHON} ./androguard_manifest.py
 ENV CONTENT_TYPE text/xml
 
-WORKDIR /opt/app/
 ENTRYPOINT ["/opt/runner/runner.sh", "${TOOL}"]
 
