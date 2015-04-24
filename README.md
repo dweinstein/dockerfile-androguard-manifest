@@ -20,17 +20,7 @@ docker run -i dweinstein/androguard-manifest < ~/android/apks/foo.apk
 
 ```
 
-## NORMAL
-
-```shell
-./runner.sh < /path/to/apk # [optional http(s):// post]
-
-./runner.sh /path/to/apk # [optional http(s):// post]
-
-```
-## DOCKER
-
-### BUILD
+# DEVELOPMENT
 ```shell
 $ docker build -t androguard-manifest .
 ```
