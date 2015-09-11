@@ -7,16 +7,16 @@ dump the manifest with androguard
 
 ```shell
  # XML output to stdout
-docker run dweinstein/androguard-manifest http://host:port/app.apk
+docker run dweinstein/androguard-manifest -i http://host:port/app.apk
 
 # OR input file inside container already: just supply path (using volume container)
-docker run -v /path/to/apps/:/path/in/container dweinstein/androguard-manifest /path/in/container/to/apk
+docker run -v /path/to/apps/:/path/in/container dweinstein/androguard-manifest -i /path/in/container/to/apk
 
 # OR POST XML result
-docker run dweinstein/androguard-manifest http://host:port/path/to/file.apk http://host:port/save/report
+docker run dweinstein/androguard-manifest -i http://host:port/path/to/file.apk -o http://host:port/save/report
 
 # OR from stdin and output to stdout
-docker run -i dweinstein/androguard-manifest < ~/android/apks/foo.apk
+docker run -i dweinstein/androguard-manifest -i - < ~/android/apks/foo.apk
 
 ```
 
