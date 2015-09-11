@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 from androguard.core.bytecodes.apk import *
 import argparse
 
