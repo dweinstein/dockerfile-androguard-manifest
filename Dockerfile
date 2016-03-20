@@ -1,7 +1,7 @@
-FROM dweinstein/androguard:latest
+FROM dweinstein/androguard:v2.0.0
 MAINTAINER dweinstein "dweinst@insitusec.com"
 
-ADD https://github.com/dweinstein/analysis-runner/archive/v2.0.0.zip /tmp/runner.zip
+ADD https://github.com/dweinstein/analysis-runner/archive/v3.0.0.zip /tmp/runner.zip
 RUN unzip -j /tmp/runner.zip -d /opt/runner && \
     rm -f /tmp/runner.zip
 
